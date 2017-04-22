@@ -49,6 +49,7 @@ end
 get '/' do
 	guess = params['guess']	
 	message = check_guess(guess)
+	answer = ''
 
 	if reset_number? == true and guess.to_i != settings.secret_number
 		message = "You lost! The correct number was #{settings.secret_number}. A new number has been set for you to guess again!"
@@ -57,5 +58,15 @@ get '/' do
 	elsif guess.to_i == settings.secret_number
 		settings.secret_number = rand(100)
 	end
-	erb :index, :locals => {:message => message, :color => settings.color}
+
+	cheat_mode = params['cheat']
+
+	if cheat_mode == 'true'
+		answer = "<p>Cheat mode on! The answer is #{settings.secret_number}</p>"
+	else
+		answer = ""
+	end
+
+
+	erb :index, :locals => {:message => message, :color => settings.color, :answer => answer}
 end
