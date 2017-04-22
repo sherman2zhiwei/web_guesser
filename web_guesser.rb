@@ -7,8 +7,8 @@ set :color, 'white'
 message = ""
 
 def check_guess(guess)
-	@@guesses_left -= 1
 	if guess != nil and guess != ""
+		@@guesses_left -= 1
 		guess = guess.to_i
 		if guess - settings.secret_number > 5
 			settings.color = 'red'
@@ -37,8 +37,25 @@ def check_guess(guess)
 	end
 end
 
+def reset_number? 
+	if @@guesses_left == 0
+		@@guesses_left = 5
+		return true
+	else
+		return false
+	end
+end
+
 get '/' do
 	guess = params['guess']	
 	message = check_guess(guess)
+
+	if reset_number? == true and guess.to_i != settings.secret_number
+		message = "You lost! The correct number was #{settings.secret_number}. A new number has been set for you to guess again!"
+		settings.secret_number = rand(100)
+		settings.color = 'white'
+	elsif guess.to_i == settings.secret_number
+		settings.secret_number = rand(100)
+	end
 	erb :index, :locals => {:message => message, :color => settings.color}
 end
