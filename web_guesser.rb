@@ -1,5 +1,5 @@
 require 'sinatra'
-# require 'sinatra/reloader'
+require 'sinatra/reloader' if development?
 
 set :secret_number, rand(100)
 set :color, 'white'
